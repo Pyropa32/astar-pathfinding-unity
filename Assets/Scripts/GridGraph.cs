@@ -1,60 +1,62 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-
-public class GridGraph
+namespace LostTrainDude
 {
-    public int Width;
-    public int Height;
 
-    public Node[,] Grid;
-    public List<Vector2> Walls;
-    public List<Vector2> Forests;
-
-    public GridGraph(int w, int h)
+    public class GridGraph
     {
-        Width = w;
-        Height = h;
+        public int Width;
+        public int Height;
 
-        Grid = new Node[w, h];
+        public Node[,] Grid;
+        public List<Vector2> Walls;
+        public List<Vector2> Forests;
 
-        for (int x = 0; x < w; x++)
+        public GridGraph(int w, int h)
         {
-            for (int y = 0; y < h; y++)
+            Width = w;
+            Height = h;
+
+            Grid = new Node[w, h];
+
+            for (int x = 0; x < w; x++)
             {
-                Grid[x, y] = new Node(x, y);
+                for (int y = 0; y < h; y++)
+                {
+                    Grid[x, y] = new Node(x, y);
+                }
             }
         }
-    }
 
-    /// <summary>
-    /// Checks whether the neighbouring Node is within the grid bounds or not
-    /// </summary>
-    public bool InBounds(Vector2 v)
-    {
-        if (v.x >= 0 && v.x < this.Width &&
-            v.y >= 0 && v.y < this.Height)
-            return true;
-        else
-            return false;
-    }
+        /// <summary>
+        /// Checks whether the neighbouring Node is within the grid bounds or not
+        /// </summary>
+        public bool InBounds(Vector2 v)
+        {
+            if (v.x >= 0 && v.x < this.Width &&
+                v.y >= 0 && v.y < this.Height)
+                return true;
+            else
+                return false;
+        }
 
-    /// <summary>
-    /// Checks whether the neighbouring Node is a wall or not
-    /// </summary>
-    public bool Passable(Vector2 id)
-    {
-        if (Walls.Contains(id)) return false;
-        else return true;
-    }
+        /// <summary>
+        /// Checks whether the neighbouring Node is a wall or not
+        /// </summary>
+        public bool Passable(Vector2 id)
+        {
+            if (Walls.Contains(id)) return false;
+            else return true;
+        }
 
-    /// <summary>
-    /// Returns a List of neighbouring Nodes
-    /// </summary>
-    public List<Node> Neighbours(Node n)
-    {
-        List<Node> results = new List<Node>();
+        /// <summary>
+        /// Returns a List of neighbouring Nodes
+        /// </summary>
+        public List<Node> Neighbours(Node n)
+        {
+            List<Node> results = new List<Node>();
 
-        List<Vector2> directions = new List<Vector2>()
+            List<Vector2> directions = new List<Vector2>()
         {
             new Vector2( -1, 0 ), // left
             new Vector2(-1, 1 ),  // top-left, comment it out for 4-direction movement
@@ -66,22 +68,23 @@ public class GridGraph
             new Vector2( -1, -1 ) // bottom-left, comment it out for 4-direction movement
         };
 
-        foreach (Vector2 v in directions)
-        {
-            Vector2 newVector = v + n.Position;
-            if (InBounds(newVector) && Passable(newVector))
+            foreach (Vector2 v in directions)
             {
-                results.Add(Grid[(int)newVector.x, (int)newVector.y]);
+                Vector2 newVector = v + n.Position;
+                if (InBounds(newVector) && Passable(newVector))
+                {
+                    results.Add(Grid[(int)newVector.x, (int)newVector.y]);
+                }
             }
+
+            return results;
         }
 
-        return results;
-    }
-
-    public int Cost(Node b)
-    {
-        // If Node 'b' is a Forest return 2, otherwise 1
-        if (Forests.Contains(b.Position)) return 2;
-        else return 1;
+        public int Cost(Node b)
+        {
+            // If Node 'b' is a Forest return 2, otherwise 1
+            if (Forests.Contains(b.Position)) return 2;
+            else return 1;
+        }
     }
 }
